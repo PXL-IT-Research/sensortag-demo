@@ -3,5 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SensorTagDemo.TISensorConnectPage"
              Title="TI Sensor">
-  <Label Text="TISensorConnectPage" VerticalOptions="Center" HorizontalOptions="Center" />
+  <StackLayout Orientation="Vertical" Spacing="4">
+    <Button Text="Connect" x:Name="ConnectButton" Clicked="ConnectButton_Click" WidthRequest="100"
+            HorizontalOptions="Center"/>
+    <Label Text="Not connected" x:Name="StatusLabel"
+           HorizontalOptions="StartAndExpand" BackgroundColor="Red" />
+  </StackLayout>
 </ContentPage>

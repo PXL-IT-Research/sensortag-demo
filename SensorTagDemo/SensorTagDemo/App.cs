@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Robotics.Mobile.Core.Bluetooth.LE;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,17 @@ namespace SensorTagDemo
 {
     public class App : Application
     {
+        static IAdapter Adapter;
+
         public App()
         {
             // The root page of your application
-            MainPage = new DemoStartPage();
+            MainPage = new DemoStartPage(Adapter);
+        }
+
+        public static void SetAdapter(IAdapter adapter)
+        {
+            Adapter = adapter;
         }
 
         protected override void OnStart()
