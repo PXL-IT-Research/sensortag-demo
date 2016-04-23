@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SensorTagDemo.SensorTagLib
+namespace SensorTagLib
 {
     /// <summary>
     /// Following in the spirit of https://github.com/clovett/SensorTag-for-Windows
@@ -22,5 +22,8 @@ namespace SensorTagDemo.SensorTagLib
         {
             this._device = device;
         }
+
+        public SensorTag()
+        { }
     }
 }
