@@ -43,7 +43,9 @@
       <DependentUpon>InteractPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SensorTagLib\DeviceNotFoundException.cs" />
     <Compile Include="SensorTagLib\SensorTag.cs" />
+    <Compile Include="SensorTagLib\SensorTagFactory.cs" />
     <Compile Include="SpheroConnectPage.xaml.cs">
       <DependentUpon>SpheroConnectPage.xaml</DependentUpon>
     </Compile>

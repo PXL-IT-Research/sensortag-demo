@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Robotics.Mobile.Core.Bluetooth.LE;
+using SensorTagLib;
 
 namespace SensorTagDemo
 {
@@ -19,18 +20,20 @@ namespace SensorTagDemo
             InitializeComponent();
             _adapter = adapter;
 
-            _adapter.DeviceDiscovered += Adapter_DeviceDiscovered;
+            //_adapter.DeviceDiscovered += Adapter_DeviceDiscovered;
         }
 
-        private void Adapter_DeviceDiscovered(object sender, DeviceDiscoveredEventArgs e)
-        {
-            Debug.WriteLine("Discovered: " + e.Device);
-        }
+        //private void Adapter_DeviceDiscovered(object sender, DeviceDiscoveredEventArgs e)
+        //{
+        //    Debug.WriteLine("Discovered: " + e.Device);
+        //}
 
-        public void ConnectButton_Click(object sender, EventArgs args)
+        public async void ConnectButton_Click(object sender, EventArgs args)
         {
             Debug.WriteLine("Start Scanning");
-            _adapter.StartScanningForDevices(Guid.Empty);
+            //_adapter.StartScanningForDevices(Guid.Empty);
+            IDevice device = await SensorTagFactory.FindSensorTag(_adapter);
+            Debug.WriteLine("Found: " + device.Name);
         }
     }
 }

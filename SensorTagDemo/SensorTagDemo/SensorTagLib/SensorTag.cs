@@ -23,7 +23,5 @@ namespace SensorTagLib
             this._device = device;
         }
 
-        public SensorTag()
-        { }
     }
 }
