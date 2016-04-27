@@ -23,17 +23,16 @@ namespace SensorTagDemo
             //_adapter.DeviceDiscovered += Adapter_DeviceDiscovered;
         }
 
-        //private void Adapter_DeviceDiscovered(object sender, DeviceDiscoveredEventArgs e)
-        //{
-        //    Debug.WriteLine("Discovered: " + e.Device);
-        //}
-
         public async void ConnectButton_Click(object sender, EventArgs args)
         {
             Debug.WriteLine("Start Scanning");
-            //_adapter.StartScanningForDevices(Guid.Empty);
             IDevice device = await SensorTagFactory.FindSensorTag(_adapter);
+
+            var sensortag = await SensorTagFactory.ConnectSensorTag(device, _adapter);
+
+            StatusLabel.Text = "Found: " + device.Name + ", ID: " + device.ID;
             Debug.WriteLine("Found: " + device.Name);
+            Debug.WriteLine("Device ID: " + device.ID);
         }
     }
 }
