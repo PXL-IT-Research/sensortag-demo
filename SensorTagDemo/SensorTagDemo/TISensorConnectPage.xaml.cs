@@ -26,13 +26,13 @@ namespace SensorTagDemo
         public async void ConnectButton_Click(object sender, EventArgs args)
         {
             Debug.WriteLine("Start Scanning");
-            IDevice device = await SensorTagFactory.FindSensorTag(_adapter);
+            SensorTag stag = await SensorTagFactory.FindSensorTag(_adapter);
 
-            var sensortag = await SensorTagFactory.ConnectSensorTag(device, _adapter);
+            //var sensortag = await SensorTagFactory.ConnectSensorTag(device, _adapter);
 
-            StatusLabel.Text = "Found: " + device.Name + ", ID: " + device.ID;
-            Debug.WriteLine("Found: " + device.Name);
-            Debug.WriteLine("Device ID: " + device.ID);
+            StatusLabel.Text = "Found: " + stag.Name + ", ID: " + stag.ID;
+            Debug.WriteLine("Found: " + stag.Name);
+            Debug.WriteLine("Device ID: " + stag.ID);
         }
     }
 }

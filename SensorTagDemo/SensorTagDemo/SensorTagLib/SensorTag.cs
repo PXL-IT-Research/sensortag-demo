@@ -21,7 +21,12 @@ namespace SensorTagLib
         public SensorTag(IDevice device)
         {
             this._device = device;
+            Name = _device.Name;
+            ID = _device.ID;
         }
+
+        public string Name { get; set; }
+        public Guid ID { get; set; }
 
     }
 }

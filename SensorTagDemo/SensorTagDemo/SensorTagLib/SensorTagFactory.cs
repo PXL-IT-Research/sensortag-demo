@@ -13,9 +13,9 @@ namespace SensorTagLib
     /// </summary>
     public class SensorTagFactory
     {
-        public static Task<IDevice> FindSensorTag(IAdapter adapter)
+        public static Task<SensorTag> FindSensorTag(IAdapter adapter)
         {
-            TaskCompletionSource<IDevice> tcs = new TaskCompletionSource<IDevice>();
+            TaskCompletionSource<SensorTag> tcs = new TaskCompletionSource<SensorTag>();
             IDevice sensortagDevice = null;
 
             adapter.DeviceDiscovered += (sender, e) =>
@@ -26,7 +26,8 @@ namespace SensorTagLib
                     {
                         sensortagDevice = e.Device;
                         // this event triggers multiple times, so set the result only once
-                        tcs.TrySetResult(sensortagDevice);
+                        var sensorTag = new SensorTag(sensortagDevice);
+                        tcs.TrySetResult(sensorTag);
                     }
                 }
             };
