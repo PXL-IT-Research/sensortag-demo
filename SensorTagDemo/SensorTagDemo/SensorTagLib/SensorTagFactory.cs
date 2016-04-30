@@ -26,7 +26,7 @@ namespace SensorTagLib
                     {
                         sensortagDevice = e.Device;
                         // this event triggers multiple times, so set the result only once
-                        var sensorTag = new SensorTag(sensortagDevice);
+                        var sensorTag = new SensorTag(sensortagDevice, adapter);
                         tcs.TrySetResult(sensorTag);
                     }
                 }
@@ -60,7 +60,7 @@ namespace SensorTagLib
             adapter.DeviceConnected += (sender, e) =>
             {
                 device = e.Device;
-                var sensorTag = new SensorTag(device);
+                var sensorTag = new SensorTag(device, adapter);
 
                 // when services are discovered
                 device.ServicesDiscovered += (object se, EventArgs ea) => {

@@ -1,6 +1,7 @@
 ﻿using Robotics.Mobile.Core.Bluetooth.LE;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,16 +18,56 @@ namespace SensorTagLib
     public class SensorTag
     {
         private IDevice _device;
+        private IAdapter _adapter;
 
-        public SensorTag(IDevice device)
+        private BleButtonService _buttonService;
+
+        public SensorTag(IDevice device, IAdapter adapter)
         {
             this._device = device;
+            this._adapter = adapter;
             Name = _device.Name;
             ID = _device.ID;
         }
 
         public string Name { get; set; }
         public Guid ID { get; set; }
+
+        /// <summary>
+        /// Connect or reconnect to the device.
+        /// </summary>
+        /// <returns></returns>
+        public Task<bool> ConnectAsync()
+        {
+            bool status = false;
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            
+            _adapter.DeviceConnected += (sender, e) =>
+            {
+                _device = e.Device;
+                
+                // when services are discovered
+                _device.ServicesDiscovered += (object se, EventArgs ea) => {
+                    foreach (var service in _device.Services)
+                    {
+                        if (service.ID == BleButtonService.ButtonServiceUuid)
+                        {
+                            Debug.WriteLine("Found BleButtonService");
+                            _buttonService = new BleButtonService();
+                        }
+
+                    }
+                };
+
+                // start looking for services
+                _device.DiscoverServices();
+            };
+
+            _adapter.ConnectToDevice(_device);
+            tcs.SetResult(status);
+            
+            return tcs.Task;
+        }
 
     }
 }
