@@ -6,7 +6,9 @@
   <StackLayout Orientation="Vertical" Spacing="4">
     <Button Text="Connect" x:Name="ConnectButton" Clicked="ConnectButton_Click" WidthRequest="100"
             HorizontalOptions="Center"/>
+    
     <Label Text="Not connected" x:Name="StatusLabel"
-           HorizontalOptions="StartAndExpand" BackgroundColor="Red" />
+           HorizontalOptions="CenterAndExpand" BackgroundColor="Red"
+           FontSize="Large"/>
   </StackLayout>
 </ContentPage>

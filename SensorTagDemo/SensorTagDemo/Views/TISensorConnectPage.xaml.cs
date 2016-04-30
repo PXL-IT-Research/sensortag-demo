@@ -19,18 +19,22 @@ namespace SensorTagDemo
         {
             InitializeComponent();
             _adapter = adapter;
-
-            //_adapter.DeviceDiscovered += Adapter_DeviceDiscovered;
         }
 
         public async void ConnectButton_Click(object sender, EventArgs args)
         {
             Debug.WriteLine("Start Scanning");
+
+            ConnectButton.IsEnabled = false;
+
             SensorTag stag = await SensorTagFactory.FindSensorTag(_adapter);
+            bool status = await stag.ConnectAsync();
 
-            //var sensortag = await SensorTagFactory.ConnectSensorTag(device, _adapter);
+            StatusLabel.Text = "Found: " + stag.Name + ", \nID: " + stag.ID;
+            StatusLabel.BackgroundColor = Color.Lime;
+            
+            ConnectButton.IsEnabled = true;
 
-            StatusLabel.Text = "Found: " + stag.Name + ", ID: " + stag.ID;
             Debug.WriteLine("Found: " + stag.Name);
             Debug.WriteLine("Device ID: " + stag.ID);
         }
