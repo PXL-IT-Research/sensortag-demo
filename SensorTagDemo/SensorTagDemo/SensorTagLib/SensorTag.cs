@@ -53,7 +53,8 @@ namespace SensorTagLib
                         if (service.ID == BleButtonService.ButtonServiceUuid)
                         {
                             Debug.WriteLine("Found BleButtonService");
-                            _buttonService = new BleButtonService();
+                            _buttonService = new BleButtonService(_adapter, service);
+                            _buttonService.ButtonValueChanged += ButtonService_ButtonValueChanged;
                         }
 
                     }
@@ -69,5 +70,9 @@ namespace SensorTagLib
             return tcs.Task;
         }
 
+        private void ButtonService_ButtonValueChanged(object sender, SensorButtonEventArgs e)
+        {
+            Debug.WriteLine("Buttons pressed: " + e);
+        }
     }
 }
