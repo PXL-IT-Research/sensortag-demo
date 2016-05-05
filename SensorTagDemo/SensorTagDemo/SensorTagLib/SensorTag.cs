@@ -54,7 +54,7 @@ namespace SensorTagLib
                         {
                             Debug.WriteLine("Found BleButtonService");
                             _buttonService = new BleButtonService(_adapter, service);
-                            _buttonService.ButtonValueChanged += ButtonService_ButtonValueChanged;
+                            
                         }
 
                     }

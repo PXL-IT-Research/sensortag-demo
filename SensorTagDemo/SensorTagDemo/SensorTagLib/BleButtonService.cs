@@ -1,6 +1,7 @@
 ﻿using Robotics.Mobile.Core.Bluetooth.LE;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,110 +16,34 @@ namespace SensorTagLib
         public static Guid ButtonServiceUuid = Guid.Parse("0000ffe0-0000-1000-8000-00805f9b34fb");
         public static Guid ButtonCharacteristicUuid = Guid.Parse("0000ffe1-0000-1000-8000-00805f9b34fb");
 
+        private ICharacteristic _characteristic;
+
         public BleButtonService(IAdapter adapter, IService service)
             : base(adapter, service)
-        {}
-
-        Delegate _buttonValueChanged;
-
-        public event EventHandler<SensorButtonEventArgs> ButtonValueChanged
         {
-            add
+            _service.CharacteristicsDiscovered += (object sender, EventArgs e) =>
             {
-                if (_buttonValueChanged != null)
-                {
-                    _buttonValueChanged = Delegate.Combine(_buttonValueChanged, value);
-                }
-                else
-                {
-                    _buttonValueChanged = value;
-                    RegisterForValueChangeEvents(ButtonCharacteristicUuid);
-                }
-            }
-            remove
+                _characteristic = _service.Characteristics.First(); // only one for buttons
+                Debug.WriteLine("Characteristic discovered: " + _characteristic.Name);
+            };
+
+            _service.DiscoverCharacteristics();
+
+            if (_characteristic != null)
             {
-                if (_buttonValueChanged != null)
+                if (_characteristic.CanUpdate)
                 {
-                    _buttonValueChanged = Delegate.Remove(_buttonValueChanged, value);
-                    if (_buttonValueChanged == null)
+                    _characteristic.ValueUpdated += (object sender, CharacteristicReadEventArgs e) =>
                     {
-                        UnregisterForValueChangeEvents(ButtonCharacteristicUuid);
-                    }
+                        Debug.WriteLine("Update: " + e.Characteristic.Value);
+
+                        //Todo: make human readable and throw event up
+                    };
+
+                    _characteristic.StartUpdates();
                 }
             }
         }
-
-        private void OnButtonValueChanged(SensorButtonEventArgs args)
-        {
-            if (_buttonValueChanged != null)
-            {
-                ((EventHandler<SensorButtonEventArgs>)_buttonValueChanged)(this, args);
-            }
-        }
-
-        //public async Task<bool> ConnectAsync(string deviceContainerId)
-        //{
-        //    return await this.ConnectAsync(ButtonServiceUuid, deviceContainerId);
-        //}
-
-        //protected override void OnCharacteristicValueChanged(GattCharacteristic sender, GattValueChangedEventArgs eventArgs)
-        //{
-        //    if (sender.Uuid == ButtonCharacteristicUuid)
-        //    {
-        //        if (_buttonValueChanged != null)
-        //        {
-        //            uint dataLength = eventArgs.CharacteristicValue.Length;
-        //            using (DataReader reader = DataReader.FromBuffer(eventArgs.CharacteristicValue))
-        //            {
-        //                if (dataLength == 1)
-        //                {
-        //                    byte bits = reader.ReadByte();
-
-        //                    OnButtonValueChanged(new SensorButtonEventArgs(bits, eventArgs.Timestamp));
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        public void UnregisterForValueChangeEvents(Guid guid)
-        {
-            foreach (var characteristic in GetSafeCharacteristics())
-            {
-                if (characteristic.ID == guid)
-                {
-                    UnregisterCharacteristic(characteristic);
-                    break;
-                }
-            }
-            this._requestedCharacteristics.Remove(guid);
-        }
-
-        ICharacteristic[] GetSafeCharacteristics()
-        {
-            ICharacteristic[] temp;
-            if (_characteristics == null)
-            {
-                return new ICharacteristic[0];
-            }
-            lock (_characteristics)
-            {
-                temp = _characteristics.ToArray();
-            }
-            return temp;
-        }
-
-        private void UnregisterCharacteristic(ICharacteristic characteristic)
-        {
-            CharacteristicPropertyType properties = characteristic.Properties;
-            if ((properties & CharacteristicPropertyType.Notify) != 0)
-            {
-                // stop notifying.
-                characteristic.ValueUpdated -= OnCharacteristicValueChanged;
-            }
-        }
-
-
     }
 
     public class SensorButtonEventArgs : EventArgs
