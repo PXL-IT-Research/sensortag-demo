@@ -18,6 +18,9 @@ namespace SensorTagLib
 
         private ICharacteristic _characteristic;
 
+        public delegate void ButtonStatusChangedHandler(object sender, SensorButtonEventArgs args);
+        public event ButtonStatusChangedHandler ButtonStatusChanged;
+
         public BleButtonService(IAdapter adapter, IService service)
             : base(adapter, service)
         {
@@ -35,35 +38,50 @@ namespace SensorTagLib
                 {
                     _characteristic.ValueUpdated += (object sender, CharacteristicReadEventArgs e) =>
                     {
+                        var status = Decode(e.Characteristic.Value);
                         Debug.WriteLine("Update: " + e.Characteristic.Value);
-
-                        //Todo: make human readable and throw event up
+                        Debug.WriteLine("Decoded: " + status);
+                        if (ButtonStatusChanged != null)
+                            ButtonStatusChanged(this, new SensorButtonEventArgs(status, DateTime.Now));
                     };
 
                     _characteristic.StartUpdates();
                 }
             }
         }
+
+        private ButtonStatus Decode(byte[] value)
+        {
+            // Smart Keys: Bit 2 - side key, Bit 1 - right key, Bit 0 – left key - works
+            var b = ((int)value[0]) % 4;
+            ButtonStatus output = ButtonStatus.NoButtonDown;
+            switch (b)
+            {
+                case 1:
+                    output = ButtonStatus.RightButtonDown;
+                    break;
+                case 2:
+                    output = ButtonStatus.LeftButtonDown;
+                    break;
+                case 3:
+                    output = ButtonStatus.BothButtonsDown;
+                    break;
+                default:
+                    output = ButtonStatus.NoButtonDown;
+                    break;
+            };
+            return output;
+        }
     }
 
     public class SensorButtonEventArgs : EventArgs
     {
-        private byte bits;
+        private ButtonStatus _status;
 
-        public SensorButtonEventArgs(byte bits, DateTimeOffset timestamp)
+        public SensorButtonEventArgs(ButtonStatus status, DateTimeOffset timestamp)
         {
-            this.bits = bits;
+            _status = status;
             Timestamp = timestamp;
-        }
-
-        public bool LeftButtonDown
-        {
-            get { return (bits & 0x2) == 0x2; }
-        }
-
-        public bool RightButtonDown
-        {
-            get { return (bits & 0x1) == 0x1; }
         }
 
         public DateTimeOffset Timestamp
@@ -71,5 +89,13 @@ namespace SensorTagLib
             get;
             private set;
         }
+    }
+
+    public enum ButtonStatus
+    {
+        LeftButtonDown,
+        RightButtonDown,
+        BothButtonsDown,
+        NoButtonDown
     }
 }
