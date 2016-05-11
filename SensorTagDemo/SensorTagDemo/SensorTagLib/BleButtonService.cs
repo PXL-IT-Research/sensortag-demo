@@ -76,15 +76,19 @@ namespace SensorTagLib
 
     public class SensorButtonEventArgs : EventArgs
     {
-        private ButtonStatus _status;
-
         public SensorButtonEventArgs(ButtonStatus status, DateTimeOffset timestamp)
         {
-            _status = status;
+            Status = status;
             Timestamp = timestamp;
         }
 
         public DateTimeOffset Timestamp
+        {
+            get;
+            private set;
+        }
+
+        public ButtonStatus Status
         {
             get;
             private set;

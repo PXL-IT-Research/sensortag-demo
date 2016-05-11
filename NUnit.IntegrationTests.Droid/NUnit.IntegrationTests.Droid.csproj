@@ -133,9 +133,6 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MainActivity.cs.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SensorTagDemo\SensorTagDemo\SensorTagDemo.csproj">
       <Project>{2f0a7247-b898-44c7-9932-16e00b5de8e4}</Project>
       <Name>SensorTagDemo</Name>

@@ -37,6 +37,8 @@ namespace SensorTagDemo
 
             Debug.WriteLine("Found: " + stag.Name);
             Debug.WriteLine("Device ID: " + stag.ID);
+
+            BindingContext = stag;
         }
     }
 }

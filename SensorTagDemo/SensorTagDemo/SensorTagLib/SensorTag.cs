@@ -1,4 +1,5 @@
-﻿using Robotics.Mobile.Core.Bluetooth.LE;
+﻿using GalaSoft.MvvmLight;
+using Robotics.Mobile.Core.Bluetooth.LE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,13 +16,13 @@ namespace SensorTagLib
     /// for details on GATT services.
     /// Under the covers we will use https://github.com/xamarin/Monkey.Robotics
     /// </summary>
-    public class SensorTag
+    public class SensorTag : ObservableObject
     {
         private IDevice _device;
         private IAdapter _adapter;
 
         private BleButtonService _buttonService;
-
+        
         public SensorTag(IDevice device, IAdapter adapter)
         {
             this._device = device;
@@ -33,6 +34,20 @@ namespace SensorTagLib
         public string Name { get; set; }
         public Guid ID { get; set; }
 
+        private ButtonStatus _buttonStatus;
+        public ButtonStatus ButtonStatus
+        {
+            get
+            {
+                return _buttonStatus;
+            }
+            set
+            {
+                Set<ButtonStatus>(ref _buttonStatus, value);
+            }
+        }
+
+        
         /// <summary>
         /// Connect or reconnect to the device.
         /// </summary>
@@ -54,6 +69,7 @@ namespace SensorTagLib
                         {
                             Debug.WriteLine("Found BleButtonService");
                             _buttonService = new BleButtonService(_adapter, service);
+                            _buttonService.ButtonStatusChanged += ButtonService_ButtonStatusChanged;
                             
                         }
 
@@ -68,6 +84,11 @@ namespace SensorTagLib
             tcs.SetResult(status);
             
             return tcs.Task;
+        }
+
+        private void ButtonService_ButtonStatusChanged(object sender, SensorButtonEventArgs args)
+        {
+            ButtonStatus = args.Status;
         }
     }
 }

@@ -10,5 +10,10 @@
     <Label Text="Not connected" x:Name="StatusLabel"
            HorizontalOptions="CenterAndExpand" BackgroundColor="Red"
            FontSize="Large"/>
+    
+    <Label Text="{Binding ButtonStatus}"
+           HorizontalOptions="CenterAndExpand"
+           FontSize="Large"/>
+    
   </StackLayout>
 </ContentPage>
