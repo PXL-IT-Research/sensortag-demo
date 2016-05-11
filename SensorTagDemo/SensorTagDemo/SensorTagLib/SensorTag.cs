@@ -69,10 +69,5 @@ namespace SensorTagLib
             
             return tcs.Task;
         }
-
-        private void ButtonService_ButtonValueChanged(object sender, SensorButtonEventArgs e)
-        {
-            Debug.WriteLine("Buttons pressed: " + e);
-        }
     }
 }
