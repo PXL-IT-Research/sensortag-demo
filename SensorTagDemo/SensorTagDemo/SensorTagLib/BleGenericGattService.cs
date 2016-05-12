@@ -14,10 +14,7 @@ namespace SensorTagLib
         protected List<ICharacteristic> _characteristics;
         protected IDevice _connectedDevice;
         protected IAdapter _adapter;
-        protected bool _connected;
-        protected bool _disconnecting;
-        protected HashSet<Guid> _requestedCharacteristics = new HashSet<Guid>();
-
+        
         public BleGenericGattService(IAdapter adapter, IService service)
         {
             _adapter = adapter;

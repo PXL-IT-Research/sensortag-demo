@@ -39,6 +39,7 @@
     <Compile Include="SensorTagLib\BleGenericGattService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SensorTagLib\BleButtonService.cs" />
+    <Compile Include="SensorTagLib\BleTemperatureService.cs" />
     <Compile Include="SensorTagLib\DeviceNotFoundException.cs" />
     <Compile Include="SensorTagLib\SensorTag.cs" />
     <Compile Include="SensorTagLib\SensorTagFactory.cs" />

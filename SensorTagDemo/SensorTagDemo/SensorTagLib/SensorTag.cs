@@ -22,6 +22,7 @@ namespace SensorTagLib
         private IAdapter _adapter;
 
         private BleButtonService _buttonService;
+        private BleTemperatureService _temperatureService;
         
         public SensorTag(IDevice device, IAdapter adapter)
         {
@@ -73,6 +74,11 @@ namespace SensorTagLib
                             
                         }
 
+                        if (service.ID == BleTemperatureService.IRTemperatureServiceUuid)
+                        {
+                            Debug.WriteLine("Found BleTemperatureService");
+                            _temperatureService = new BleTemperatureService(_adapter, service);
+                        }
                     }
                 };
 
