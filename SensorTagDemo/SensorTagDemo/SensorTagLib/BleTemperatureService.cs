@@ -48,6 +48,62 @@ namespace SensorTagLib
             };
 
             _service.DiscoverCharacteristics();
+
+            if (_temperatureCharConfig != null)
+            {
+
+               // _temperatureCharConfig.Write(new byte[] { 0x01 }); // Turn ON
+            }
+
+            if (_temperatureChar != null)
+            {
+                if (_temperatureChar.CanUpdate)
+                {
+                    _temperatureChar.ValueUpdated += (object sender, CharacteristicReadEventArgs e) =>
+                    {
+                        double ambient, infrared;
+                        CalculateTemperature(out ambient, out infrared);
+                    };                
+                }
+            }
+        }
+
+        public void StartSensing()
+        {
+            _temperatureCharConfig.Write(new byte[] { 0x01 }); // Turn ON
+            _temperatureChar.StartUpdates();
+        }
+
+        // copied from https://github.com/conceptdev/xamarin-forms-samples/tree/master/BluetoothTISensor
+        private void CalculateTemperature(out double ambient, out double ir)
+        {
+            var sensorData = _temperatureChar.Value;
+            // Temperature sensorTMP006 - works
+            var ambientTemperature = BitConverter.ToUInt16(sensorData, 2) / 128.0;
+            double Tdie = ambientTemperature + 273.15;
+
+            // http://sensortag.codeplex.com/SourceControl/latest#SensorTagLibrary/SensorTagLibrary/Source/Sensors/IRTemperatureSensor.cs
+            double Vobj2 = BitConverter.ToInt16(sensorData, 0);
+            Vobj2 *= 0.00000015625;
+
+            double S0 = 5.593E-14;
+            double a1 = 1.75E-3;
+            double a2 = -1.678E-5;
+            double b0 = -2.94E-5;
+            double b1 = -5.7E-7;
+            double b2 = 4.63E-9;
+            double c2 = 13.4;
+            double Tref = 298.15;
+            double S = S0 * (1 + a1 * (Tdie - Tref) + a2 * Math.Pow((Tdie - Tref), 2));
+            double Vos = b0 + b1 * (Tdie - Tref) + b2 * Math.Pow((Tdie - Tref), 2);
+            double fObj = (Vobj2 - Vos) + c2 * Math.Pow((Vobj2 - Vos), 2);
+            double tObj = Math.Pow(Math.Pow(Tdie, 4) + (fObj / S), .25);
+
+            tObj -= 273.15;
+
+            Debug.WriteLine("ambient: " + Math.Round(ambientTemperature, 1) + "\nIR: " + Math.Round(tObj, 1) + " C");
+            ambient = ambientTemperature;
+            ir = tObj;
         }
     }
 }

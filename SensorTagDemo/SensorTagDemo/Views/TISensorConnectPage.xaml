@@ -14,6 +14,8 @@
     <Label Text="{Binding ButtonStatus}"
            HorizontalOptions="CenterAndExpand"
            FontSize="Large"/>
-    
+
+    <Button Text="Temperature Start" x:Name="TemperatureButton" Clicked="TemperatureButton_Click"
+            WidthRequest="100" HorizontalOptions="Center" />
   </StackLayout>
 </ContentPage>

@@ -14,6 +14,7 @@ namespace SensorTagDemo
     public partial class TISensorConnectPage : ContentPage
     {
         private IAdapter _adapter;
+        private SensorTag stag;
 
         public TISensorConnectPage(IAdapter adapter)
         {
@@ -27,7 +28,7 @@ namespace SensorTagDemo
 
             ConnectButton.IsEnabled = false;
 
-            SensorTag stag = await SensorTagFactory.FindSensorTag(_adapter);
+            stag = await SensorTagFactory.FindSensorTag(_adapter);
             bool status = await stag.ConnectAsync();
 
             StatusLabel.Text = "Found: " + stag.Name + ", \nID: " + stag.ID;
@@ -39,6 +40,11 @@ namespace SensorTagDemo
             Debug.WriteLine("Device ID: " + stag.ID);
 
             BindingContext = stag;
+        }
+
+        public void TemperatureButton_Click(object sender, EventArgs args)
+        {
+            stag.StartTemperatureSensing();
         }
     }
 }

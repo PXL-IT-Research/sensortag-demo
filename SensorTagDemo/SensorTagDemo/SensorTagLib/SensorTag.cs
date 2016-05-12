@@ -48,7 +48,12 @@ namespace SensorTagLib
             }
         }
 
-        
+        public void StartTemperatureSensing()
+        {
+            _temperatureService.StartSensing();
+        }
+
+
         /// <summary>
         /// Connect or reconnect to the device.
         /// </summary>
@@ -66,13 +71,13 @@ namespace SensorTagLib
                 _device.ServicesDiscovered += (object se, EventArgs ea) => {
                     foreach (var service in _device.Services)
                     {
-                        if (service.ID == BleButtonService.ButtonServiceUuid)
-                        {
-                            Debug.WriteLine("Found BleButtonService");
-                            _buttonService = new BleButtonService(_adapter, service);
-                            _buttonService.ButtonStatusChanged += ButtonService_ButtonStatusChanged;
+                        //if (service.ID == BleButtonService.ButtonServiceUuid)
+                        //{
+                        //    Debug.WriteLine("Found BleButtonService");
+                        //    _buttonService = new BleButtonService(_adapter, service);
+                        //    _buttonService.ButtonStatusChanged += ButtonService_ButtonStatusChanged;
                             
-                        }
+                        //}
 
                         if (service.ID == BleTemperatureService.IRTemperatureServiceUuid)
                         {
