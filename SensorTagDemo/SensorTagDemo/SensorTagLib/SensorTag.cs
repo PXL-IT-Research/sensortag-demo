@@ -62,39 +62,49 @@ namespace SensorTagLib
         {
             bool status = false;
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            
+
             _adapter.DeviceConnected += (sender, e) =>
             {
                 _device = e.Device;
-                
-                // when services are discovered
-                _device.ServicesDiscovered += (object se, EventArgs ea) => {
-                    foreach (var service in _device.Services)
-                    {
-                        //if (service.ID == BleButtonService.ButtonServiceUuid)
-                        //{
-                        //    Debug.WriteLine("Found BleButtonService");
-                        //    _buttonService = new BleButtonService(_adapter, service);
-                        //    _buttonService.ButtonStatusChanged += ButtonService_ButtonStatusChanged;
-                            
-                        //}
 
-                        if (service.ID == BleTemperatureService.IRTemperatureServiceUuid)
-                        {
-                            Debug.WriteLine("Found BleTemperatureService");
-                            _temperatureService = new BleTemperatureService(_adapter, service);
-                        }
-                    }
-                };
-
-                // start looking for services
-                _device.DiscoverServices();
+                DiscoverServicesAsync();
+                tcs.SetResult(status);
             };
 
             _adapter.ConnectToDevice(_device);
-            tcs.SetResult(status);
+           
             
             return tcs.Task;
+        }
+
+        private void DiscoverServicesAsync()
+        {
+            //bool status = false;
+            //TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
+            // when services are discovered
+            _device.ServicesDiscovered += (object se, EventArgs ea) =>
+            {
+                foreach (var service in _device.Services)
+                {
+                    if (service.ID == BleButtonService.ButtonServiceUuid)
+                    {
+                        Debug.WriteLine("Found BleButtonService");
+                        _buttonService = new BleButtonService(_adapter, service);
+                        _buttonService.ButtonStatusChanged += ButtonService_ButtonStatusChanged;
+
+                    }
+
+                    if (service.ID == BleTemperatureService.IRTemperatureServiceUuid)
+                    {
+                        Debug.WriteLine("Found BleTemperatureService");
+                        _temperatureService = new BleTemperatureService(_adapter, service);
+                    }
+                }
+            };
+
+            // start looking for services
+            _device.DiscoverServices();
         }
 
         private void ButtonService_ButtonStatusChanged(object sender, SensorButtonEventArgs args)
