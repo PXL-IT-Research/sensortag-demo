@@ -48,6 +48,19 @@ namespace SensorTagLib
             }
         }
 
+        private double _infraredTemperature;
+        public double InfraredTemperature
+        {
+            get
+            {
+                return _infraredTemperature;
+            }
+            set
+            {
+                Set<double>(ref _infraredTemperature, value);
+            }
+        }
+
         public void StartTemperatureSensing()
         {
             _temperatureService.StartSensing();
@@ -99,12 +112,18 @@ namespace SensorTagLib
                     {
                         Debug.WriteLine("Found BleTemperatureService");
                         _temperatureService = new BleTemperatureService(_adapter, service);
+                        _temperatureService.TemperatureStatusChanged += TemperatureService_TemperatureStatusChanged;
                     }
                 }
             };
 
             // start looking for services
             _device.DiscoverServices();
+        }
+
+        private void TemperatureService_TemperatureStatusChanged(object sender, TemperatureEventArgs args)
+        {
+            InfraredTemperature = args.Infrared;
         }
 
         private void ButtonService_ButtonStatusChanged(object sender, SensorButtonEventArgs args)

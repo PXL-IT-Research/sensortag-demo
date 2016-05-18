@@ -17,5 +17,10 @@
 
     <Button Text="Temperature Start" x:Name="TemperatureButton" Clicked="TemperatureButton_Click"
             WidthRequest="100" HorizontalOptions="Center" />
+    
+    <Label Text="{Binding InfraredTemperature}"
+           HorizontalOptions="CenterAndExpand"
+           FontSize="Large"/>
+    
   </StackLayout>
 </ContentPage>

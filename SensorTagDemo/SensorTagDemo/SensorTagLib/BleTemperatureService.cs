@@ -18,7 +18,10 @@ namespace SensorTagLib
         private ICharacteristic _temperatureChar;
         private ICharacteristic _temperatureCharConfig;
         private ICharacteristic _temperatureCharPeriod;
-        
+
+        public delegate void TemperatureStatusChangedHandler(object sender, TemperatureEventArgs args);
+        public event TemperatureStatusChangedHandler TemperatureStatusChanged;
+
         /// <summary>
         /// This class provides access to the SensorTag temperature data.  
         /// </summary>
@@ -117,7 +120,29 @@ namespace SensorTagLib
             ambient = (double)it * SCALE_LSB;
 
             Debug.WriteLine("ambient: " + ambient + "\nIR: " + ir + " C");
+            TemperatureStatusChanged(this, new TemperatureEventArgs(ir, DateTime.Now));
         }
 
+    }
+
+    public class TemperatureEventArgs : EventArgs
+    {
+        public TemperatureEventArgs(double infrared, DateTimeOffset timestamp)
+        {
+            Infrared = infrared;
+            Timestamp = timestamp;
+        }
+
+        public DateTimeOffset Timestamp
+        {
+            get;
+            private set;
+        }
+
+        public double Infrared
+        {
+            get;
+            private set;
+        }
     }
 }
