@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SensorTagDemo.TISensorConnectPage"
              Title="TI Sensor">
-  <StackLayout Orientation="Vertical" Spacing="4">
+  <StackLayout Orientation="Vertical" Spacing="4" x:Name="TheStack">
     <Button Text="Connect" x:Name="ConnectButton" Clicked="ConnectButton_Click" WidthRequest="100"
             HorizontalOptions="Center"/>
     
