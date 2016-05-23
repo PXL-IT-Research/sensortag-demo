@@ -16,6 +16,7 @@ namespace SensorTagDemo
     {
         private IAdapter _adapter;
         private SensorTag sensorTag;
+        private NeedlePointer needlePointer;
 
         public TISensorConnectPage(IAdapter adapter)
         {
@@ -39,9 +40,10 @@ namespace SensorTagDemo
             var scale = new Syncfusion.SfGauge.XForms.Scale();
             scale.LabelColor = Color.Gray;
             scale.LabelOffset = 0.1;
-            scale.StartValue = -40;
-            scale.EndValue = 60;
-            scale.Interval = 10;
+            scale.StartValue = -40; // DOES NOT WORK
+            scale.StartValue = 00;
+            scale.EndValue = 40;
+            scale.Interval = 5;
             scale.StartAngle = 135;
             scale.SweepAngle = 270;
             scale.RimThickness = 5;
@@ -56,15 +58,15 @@ namespace SensorTagDemo
             //range.Thickness = 10;
             //scale.Ranges.Add(range);
 
-            var needlePointer = new NeedlePointer();
-            needlePointer.Value = 60;
+            needlePointer = new NeedlePointer();
+            needlePointer.Value = 0;
             needlePointer.Color = Color.White;
             needlePointer.KnobColor = Color.White;
             needlePointer.Thickness = 3;
             needlePointer.KnobRadius = 20;
             needlePointer.LengthFactor = 0.8;
             scale.Pointers.Add(needlePointer);
-
+         
             TheStack.Children.Add(gauge);
         }
 
@@ -86,6 +88,15 @@ namespace SensorTagDemo
             Debug.WriteLine("Device ID: " + sensorTag.ID);
 
             BindingContext = sensorTag;
+
+            // Set the binding in code
+            needlePointer.BindingContext = sensorTag;
+            var b = new Binding()
+            {
+                Path = nameof(SensorTag.InfraredTemperature),
+                Mode = BindingMode.OneWay,
+            };
+            needlePointer.SetBinding(NeedlePointer.ValueProperty, b);
         }
 
         public void TemperatureButton_Click(object sender, EventArgs args)
